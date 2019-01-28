@@ -2,15 +2,14 @@ let tileSize = 16;
 let canvasSize = 512;
 
 let field = [];
-for (let i = 0; i < canvasSize/tileSize; i++) {
+for (let i = 0; i < canvasSize / tileSize; i++) {
     field[i] = [];
-    for (let j = 0; j < canvasSize/tileSize; j++) {
-        field[i][j] = 0;        
+    for (let j = 0; j < canvasSize / tileSize; j++) {
+        field[i][j] = 0;
     }
 }
-
 //init array
-field[canvasSize/tileSize];
+field[canvasSize / tileSize];
 
 // Create the canvas
 var canvas = document.createElement("canvas");
@@ -24,60 +23,116 @@ canvas.height = canvasSize;
  * x y are the pixel on the canvas
  */
 class Player {
-    
-    constructor(posX, posY, dir){
+
+    constructor(posX, posY, dir) {
         this.posX = posX;
         this.posY = posY;
         this.dir = dir;
-        this.x = this.posX*16;
-        this.y = this.posY*16;
+        this.nextDir;
+        this.x = this.posX * tileSize;
+        this.y = this.posY * tileSize;
 
         console.log(this.posX + " " + this.posY + " " + this.dir + " " + this.x + " " + this.y);
     }
 
-    moveUp(){
-        if(this.dir !== "south") 
-            this.dir = "north";
+
+    moveUp() {
+        //if (this.dir !== "south")
+        this.nextDir = "north";
     }
 
-    moveLeft(){
-        if(this.dir !== "east") 
-            this.dir = "west";
+    moveLeft() {
+        //if (this.dir !== "east")
+        this.nextDir = "west";
     }
 
-    moveDown(){
-        if(this.dir !== "north") 
-            this.dir = "south";
+    moveDown() {
+        //if (this.dir !== "north")
+        this.nextDir = "south";
     }
 
-    moveRight(){
-        if(this.dir !== "west") 
-            this.dir = "east";
+    moveRight() {
+        //if (this.dir !== "west")
+        this.nextDir = "east";
     }
 
-    update(deltatime){
+    checkDirection() {
+        switch (this.nextDir) {
+            case "north":
+                if (this.dir !== "south")
+                    this.dir = "north";
+                break;
+            case "west":
+                if (this.dir !== "east")
+                    this.dir = "west";
+                break;
+            case "south":
+                if (this.dir !== "north")
+                    this.dir = "south";
+                break;
+            case "east":
 
-        let speed = 5 * 16 * deltatime; 
+                if (this.dir !== "west")
+                    this.dir = "east";
+                break;
+            default:
+                break;
+        }
+    }
+
+    update(deltatime) {
+        /* this.x = this.posX * tileSize;
+        this.y = this.posY * tileSize; */
+        this.checkDirection();
+        // let speed = tileSize;//* deltatime;
         //console.log(speed + " "+ deltatime);
 
-        if(this.dir === "east"){
-            this.x += speed;
+        let nX = 0, nY = 0;
+        if (this.dir === "east") {
+            nX = 1;
         }
-        if(this.dir === "west"){
-            this.x -= speed;
+        if (this.dir === "west") {
+            nX = -1;
         }
-        if(this.dir === "south"){
-            this.y += speed;
+        if (this.dir === "south") {
+            nY = 1;
         }
-        if(this.dir === "north"){
-            this.y -= speed;
+        if (this.dir === "north") {
+            nY = -1;
         }
 
         //gridmovement
-        this.posX = parseInt(this.x / 16);
-        this.posY = parseInt(this.y / 16);
+        let nextPosX = this.posX + nX;
+        let nextPosY = this.posY + nY;
 
-        field[this.posX][this.posY] = 1;
+        if (field[nextPosX] != undefined && field[nextPosX][nextPosY] != undefined) {
+            console.log("moving");
+
+            field[this.posX][this.posY] = 1;
+            
+            this.posX = nextPosX;
+            this.posY = nextPosY;
+            
+            // }
+        } else {
+            console.log("BOOOOOOOM");
+            
+           /*  if (this.dir === "east") {
+                this.x -= speed;
+            }
+            if (this.dir === "west") {
+                this.x += speed;
+            }
+            if (this.dir === "south") {
+                this.y -= speed;
+            }
+            if (this.dir === "north") {
+                this.y += speed;
+            } */
+        }
+
+
+
 
         //auf position des objekts mappen
         //this.posX = parseInt(this.x);
@@ -103,7 +158,7 @@ window.addEventListener("keydown", doKeyDown, true);
 var bgReady = false;
 var bgImage = new Image();
 bgImage.onload = function () {
-	bgReady = true;
+    bgReady = true;
 };
 bgImage.src = "images/background.png";
 
@@ -113,36 +168,44 @@ let posX = 0;
 let x = 0;
 let factor = 1;
 
-var then = 0;
+//var then = 0;
 //starts the game -----------
+let fps = 5;
+let interval = 1000 / fps;
+let now;
+let then = Date.now();
+let delta;
+
+render();
 gameLoop();
 
 
 
-function input(){
+function input() {
 
 }
 
-function update(deltatime){
-    
+function update(deltatime) {
+    //console.log(deltatime);
+
     //wired stuff happened
-    if(deltatime > 1000){
+    /* if (deltatime > interval) {
         deltatime = 0;
-    }
+    } */
 
     //console.log(1/deltatime); //at the moment ~60 fps
     input();
-    
+
     //....
-    if(x > 512){
-        factor = -1; 
-    }else if(x < 0) {
+    if (x > 512) {
+        factor = -1;
+    } else if (x < 0) {
         factor = 1;
     }
-    
-    x += 3 * 16 * deltatime * factor; //3 blöcke a 32 px pro sec
 
-    posX = parseInt(x / 16)*16;
+    x += tileSize * factor; //3 blöcke a 32 px pro sec
+
+    posX = parseInt(x / tileSize) * tileSize;
 
     p1.update(deltatime);
     //p2.update(deltatime);
@@ -151,28 +214,28 @@ function update(deltatime){
 }
 
 //drawfunktionen und so ...
-function render(){
+function render() {
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     //....
     //if image is loaded than display it on canvas context
-    if (bgReady) {
-		ctx.drawImage(bgImage, 0, 0);
-	}
-    
-    ctx.fillStyle = "brown";
-    for (let i = 0; i < canvasSize/tileSize; i++) {
-        for (let j = 0; j < canvasSize/tileSize; j++) {
-            if(field[i][j] === 1){
-                ctx.fillRect(i*16, j*16, 16, 16);
+    /* if (bgReady) {
+        ctx.drawImage(bgImage, 0, 0);
+    } */
+
+    ctx.fillStyle = "pink";
+    for (let i = 0; i < canvasSize / tileSize; i++) {
+        for (let j = 0; j < canvasSize / tileSize; j++) {
+            if (field[i][j] === 1) {
+                ctx.fillRect(i * tileSize, j * tileSize, tileSize, tileSize);
             }
         }
     }
-    
+
     ctx.fillStyle = "red";
-    ctx.fillRect(0, 0+posX, 16, 16);
+    ctx.fillRect(0, 0 + posX, tileSize, tileSize);
 
     ctx.fillStyle = "green";
-    ctx.fillRect(p1.posX*16, p1.posY*16, 16, 16);
+    ctx.fillRect(p1.posX * tileSize, p1.posY * tileSize, tileSize, tileSize);
 
 
 }
@@ -180,20 +243,27 @@ function render(){
 //-----------------------------------------------------------------------------
 // hier spielt die Musik nichts mehr hier dran anfassen
 //-----------------------------------------------------------------------------
-function gameLoop(){
-    let now = Date.now();
-    let delta = now - then;
 
-    update(delta/1000);
-    render();
+function gameLoop() {
+    now = Date.now();
+    delta = now - then;
 
-    then = now;
+
+    if (delta >= interval) {
+        /* console.timeEnd("render");
+        console.time("render"); */
+        update(delta);
+        
+        render();
+        then = now;
+
+    }
 
     requestAnimationFrame(gameLoop);
 }
 //-----------------------------------------------------------------------------
 
-function doKeyDown(e){
+function doKeyDown(e) {
     let key = e.keyCode;
     console.log(key);
     //player1 rot
@@ -220,12 +290,12 @@ function doKeyDown(e){
             break;
     }
 
-    if(key == 87){
+    if (key == 87) {
         //console.log("W wurde gedrückt");
     }
 
-    if(key = 65){
-        
+    if (key = 65) {
+
     }
 
     //player2 blau
