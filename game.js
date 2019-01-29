@@ -5,7 +5,7 @@ let field = [];
 for (let i = 0; i < canvasSize / tileSize; i++) {
     field[i] = [];
     for (let j = 0; j < canvasSize / tileSize; j++) {
-        field[i][j] = 0;
+        field[i][j] = {placed: 0, color: "lightgrey", val: 0};
     }
 }
 //init array
@@ -106,22 +106,21 @@ class Player {
         let nextPosY = this.posY + nY;
 
         if (field[nextPosX] != undefined && field[nextPosX][nextPosY] != undefined &&
-            field[nextPosX][nextPosY] !== 1) {
+            field[nextPosX][nextPosY].placed !== 1) {
 
             console.log("moving");
 
-            field[this.posX][this.posY] = 1;
+            field[this.posX][this.posY].placed = 1;
+            field[this.posX][this.posY].color = "lightgreen";
 
             this.posX = nextPosX;
             this.posY = nextPosY;
 
-            // }
-        } else {
+            // f
+        } else { // here collision
+            
             console.log("BOOOOOOOM");
         }
-
-
-
 
         //auf position des objekts mappen
         //this.posX = parseInt(this.x);
@@ -168,7 +167,13 @@ let delta;
 render();
 gameLoop();
 
-
+function calcdistance(){
+    for (let x = 0; x < canvasSize/tileSize; x++) {
+        for (let y = 0; y < canvasSize/tileSize; y++) {
+            field[x][y].val = Math.abs(x - p1.posX) + Math.abs(y - p1.posY);
+        }
+    }
+}
 
 function input() {
 
@@ -196,6 +201,8 @@ function update(deltatime) {
 
     posX = parseInt(x / tileSize) * tileSize;
 
+    calcdistance();
+
     p1.update(deltatime);
     //p2.update(deltatime);
     //p3.update(deltatime);
@@ -214,9 +221,10 @@ function render() {
     ctx.fillStyle = "brown";
     for (let i = 0; i < canvasSize / tileSize; i++) {
         for (let j = 0; j < canvasSize / tileSize; j++) {
-            if (field[i][j] === 1) {
-                ctx.fillRect(i * tileSize, j * tileSize, tileSize, tileSize);
-            }
+            //if (field[i][j].placed === 1) {
+            ctx.fillStyle = field[i][j].color;
+            ctx.fillRect(i * tileSize, j * tileSize, tileSize, tileSize);
+            //}
         }
     }
 
