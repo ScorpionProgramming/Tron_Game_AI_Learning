@@ -105,30 +105,19 @@ class Player {
         let nextPosX = this.posX + nX;
         let nextPosY = this.posY + nY;
 
-        if (field[nextPosX] != undefined && field[nextPosX][nextPosY] != undefined) {
+        if (field[nextPosX] != undefined && field[nextPosX][nextPosY] != undefined &&
+            field[nextPosX][nextPosY] !== 1) {
+
             console.log("moving");
 
             field[this.posX][this.posY] = 1;
-            
+
             this.posX = nextPosX;
             this.posY = nextPosY;
-            
+
             // }
         } else {
             console.log("BOOOOOOOM");
-            
-           /*  if (this.dir === "east") {
-                this.x -= speed;
-            }
-            if (this.dir === "west") {
-                this.x += speed;
-            }
-            if (this.dir === "south") {
-                this.y -= speed;
-            }
-            if (this.dir === "north") {
-                this.y += speed;
-            } */
         }
 
 
@@ -139,7 +128,7 @@ class Player {
         //this.posY = parseInt(this.y);
 
 
-        //console.log(this.posX + "  " + this.posY + "  " + this.x + "  " + this.y + "  " + speed); 
+        //console.log(this.posX + "  " + this.posY + "  " + this.x + "  " + this.y + "  " + speed);
     }
 
 
@@ -218,11 +207,11 @@ function render() {
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     //....
     //if image is loaded than display it on canvas context
-    /* if (bgReady) {
+    if (bgReady) {
         ctx.drawImage(bgImage, 0, 0);
-    } */
+    }
 
-    ctx.fillStyle = "pink";
+    ctx.fillStyle = "brown";
     for (let i = 0; i < canvasSize / tileSize; i++) {
         for (let j = 0; j < canvasSize / tileSize; j++) {
             if (field[i][j] === 1) {
@@ -253,7 +242,7 @@ function gameLoop() {
         /* console.timeEnd("render");
         console.time("render"); */
         update(delta);
-        
+
         render();
         then = now;
 
@@ -300,10 +289,10 @@ function doKeyDown(e) {
 
     //player2 blau
     //keys: I J K L
-    //keycodes: 
+    //keycodes:
 
-    //player3 grün 
-    //keys: up left down right 
+    //player3 grün
+    //keys: up left down right
     //keycodes: 38 37 40 39
 
     //player4 gelb
