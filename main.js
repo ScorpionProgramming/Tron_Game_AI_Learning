@@ -49,14 +49,6 @@ function doKeyDown(e) {
             break;
     }
 
-    if (key == 87) {
-        //console.log("W wurde gedrückt");
-    }
-
-    if (key = 65) {
-
-    }
-
     //player2 blau
     //keys: I J K L
     //keycodes:
