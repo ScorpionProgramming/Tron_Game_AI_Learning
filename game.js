@@ -87,7 +87,14 @@ class TRONGame {
     }
 
     updateEachPlayer() {
-        this.players.forEach(p => p.update());
+
+        this.players.forEach(p => {
+            p.update();
+
+
+        });
+
+        this.checkWinCondition();
     }
 
     nextUpdate() {
@@ -96,6 +103,19 @@ class TRONGame {
         }
     }
 
+    checkWinCondition() {
+        let alivePlayers = [];
+        this.players.forEach(p => {
+            if (p.alive)
+            alivePlayers.push(p);
+        });
+
+        // switch(alivePlayers.length){
+        //     case 0: this.endGame(0, null);
+        //             break;
+        //     case 1: this.endGame(1, alivePlayers[0]);
+        // }
+    }
 
     //-----------------------------------------------------------------------------
     // hier spielt die Musik nichts mehr hier dran anfassen
@@ -229,6 +249,10 @@ class Player {
     }
 
     update() {
+        if (!this.alive){
+            return;
+        }
+
         this.checkDirection();
 
         let nX = 0, nY = 0;
