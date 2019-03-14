@@ -6,6 +6,7 @@ class TRONGame {
      */
     constructor(noConstantUpdates) {
         this.gameLoop = this.gameLoop.bind(this);
+
         this.noConstantUpdates = noConstantUpdates;
         let fps = 10;
         this.interval = 1000 / fps;
@@ -24,8 +25,6 @@ class TRONGame {
                 field[i][j] = { placed: 0, color: "lightgrey", val: 0 };
             }
         }
-        //init array
-        field[canvasSize / tileSize];
 
         // Create the canvas
         let canvas = document.createElement("canvas");
@@ -53,6 +52,7 @@ class TRONGame {
     }
 
     start() {
+        //this.field = [];
         this.then = Date.now();
 
         // Background image
@@ -105,6 +105,7 @@ class TRONGame {
         let now = Date.now();
         let delta = now - this.then;
 
+
         if (delta >= this.interval || this.noConstantUpdates) {
             this.update();
 
@@ -138,8 +139,8 @@ class TRONGame {
 
         this.players.forEach(p => {
             this.ctx.fillStyle = "grey";
-            const x = p.posX * tileSize;
-            const y = p.posY * tileSize;
+            const x = p.posX * tileSize + (tileSize / 4);
+            const y = p.posY * tileSize + (tileSize / 4);
             const w = tileSize / 2
             this.ctx.fillRect(x, y, w, w);
         });
