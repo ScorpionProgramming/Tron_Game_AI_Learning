@@ -171,6 +171,7 @@ class Player {
         this.nextDir;
         this.field = field;
         this.color = color;
+        this.alive = true;
         field[posX][posY].placed = 1;
         field[posX][posY].color = color;
         console.log(this.posX + " " + this.posY + " " + this.dir);
@@ -255,7 +256,8 @@ class Player {
 
 
         } else { // here collision
-            console.log("BOOOOOOOM");
+            this.alive = false;
+            console.log(this.color + "BOOOOOOOM");
         }
 
 
