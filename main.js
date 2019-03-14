@@ -1,4 +1,4 @@
-const game = new TRONGame();
+const game = new TRONGame(false);
 //game.setup();
 
 const id1 = game.addPlayer("green");

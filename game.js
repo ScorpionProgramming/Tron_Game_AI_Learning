@@ -1,9 +1,13 @@
 class TRONGame {
 
-    constructor() {
+    /**
+     *
+     * @param {boolean} noConstantUpdates
+     */
+    constructor(noConstantUpdates) {
         this.gameLoop = this.gameLoop.bind(this);
-
-        let fps = 1;
+        this.noConstantUpdates = noConstantUpdates;
+        let fps = 10;
         this.interval = 1000 / fps;
         this.then = Date.now();
 
@@ -44,7 +48,8 @@ class TRONGame {
     }
 
     getPlayer(i) {
-        return this.players[i];
+        if (this.players[i])
+            return this.players[i];
     }
 
     start() {
@@ -74,20 +79,40 @@ class TRONGame {
 
 
 
-    calcdistance() {
-        const p1 = this.players[0];
-        for (let x = 0; x < this.canvasSize / this.tileSize; x++) {
-            for (let y = 0; y < this.canvasSize / this.tileSize; y++) {
 
-                this.field[x][y].val = Math.abs(x - p1.posX) + Math.abs(y - p1.posY);
-            }
+    update() {
+        if (!this.noConstantUpdates)
+            this.updateEachPlayer();
+
+    }
+
+    updateEachPlayer() {
+        this.players.forEach(p => p.update());
+    }
+
+    nextUpdate() {
+        if (this.noConstantUpdates) {
+            this.updateEachPlayer();
         }
     }
-    update(deltatime) {
 
-        this.calcdistance();
 
-        this.players.forEach(p => p.update(deltatime));
+    //-----------------------------------------------------------------------------
+    // hier spielt die Musik nichts mehr hier dran anfassen
+    //-----------------------------------------------------------------------------
+
+    gameLoop() {
+        let now = Date.now();
+        let delta = now - this.then;
+
+        if (delta >= this.interval || this.noConstantUpdates) {
+            this.update();
+
+            this.render();
+            this.then = now;
+        }
+
+        requestAnimationFrame(this.gameLoop);
     }
 
     //drawfunktionen und so ...
@@ -120,38 +145,19 @@ class TRONGame {
         });
     }
 
-    //-----------------------------------------------------------------------------
-    // hier spielt die Musik nichts mehr hier dran anfassen
-    //-----------------------------------------------------------------------------
 
-    gameLoop() {
-        let now = Date.now();
-        let delta = now - this.then;
-
-
-        if (delta >= this.interval) {
-            this.update(delta);
-
-            this.render();
-            this.then = now;
-        }
-
-        requestAnimationFrame(this.gameLoop);
-    }
     //-----------------------------------------------------------------------------
 
 
     getBoard() {
         //get the playing field as a 1D-Array
-        let tileCount = this.canvasSize/this.tileSize;
-        let exportField = new Array(tileCount*tileCount);
+        let tileCount = this.canvasSize / this.tileSize;
+        let exportField = new Array(tileCount * tileCount);
 
         //Loop over playing field
-        for (let i = 0; i < tileCount; i++)
-        {
-            for (let n = 0; n < tileCount; n++)
-            {
-                exportField[tileCount*i+n] = this.field[n][i].placed;
+        for (let i = 0; i < tileCount; i++) {
+            for (let n = 0; n < tileCount; n++) {
+                exportField[tileCount * i + n] = this.field[n][i].placed;
             }
         }
         console.log(exportField);
@@ -221,7 +227,7 @@ class Player {
         }
     }
 
-    update(deltatime) {
+    update() {
         this.checkDirection();
 
         let nX = 0, nY = 0;
