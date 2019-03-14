@@ -6,6 +6,7 @@ class TRONGame {
      */
     constructor(noConstantUpdates) {
         this.gameLoop = this.gameLoop.bind(this);
+        this.buildField = this.buildField.bind(this);
 
         this.noConstantUpdates = noConstantUpdates;
         let fps = 10;
@@ -17,14 +18,9 @@ class TRONGame {
         this.players = [];
 
         this.field = [];
+        this.buildField();
+        const { canvasSize } = this;
 
-        const { tileSize, canvasSize, field } = this;
-        for (let i = 0; i < canvasSize / tileSize; i++) {
-            field[i] = [];
-            for (let j = 0; j < canvasSize / tileSize; j++) {
-                field[i][j] = { placed: 0, color: "lightgrey", val: 0 };
-            }
-        }
 
         // Create the canvas
         let canvas = document.createElement("canvas");
@@ -37,13 +33,37 @@ class TRONGame {
     addPlayer(color) {
         const positions = [{ x: 0, y: 0, dir: "east" }, { x: 31, y: 31, dir: "west" }];
         let position = {};
-        if (this.field[positions[0].x][positions[0].y].placed === 0)
-            position = positions[0];
-        else
-            position = positions[1];
+        const {field} = this;
+
+        positions.forEach(pos => {
+            if(field[pos.x][pos.y].placed === 0)
+                position = pos;
+        });
 
         let p1 = new Player(position.x, position.y, position.dir, this.field, color);
         return this.players.push(p1) - 1;
+    }
+
+    buildField() {
+        this.field = [];
+
+        const { tileSize, canvasSize } = this;
+        for (let i = 0; i < canvasSize / tileSize; i++) {
+            this.field[i] = [];
+            for (let j = 0; j < canvasSize / tileSize; j++) {
+                this.field[i][j] = { placed: 0, color: "lightgrey", val: 0 };
+            }
+        }
+    }
+
+    reset() {
+        this.buildField();
+        const oldPlayers = [...this.players];
+        this.players = [];
+        oldPlayers.forEach(p => {
+            this.addPlayer(p.color);
+        });
+        this.render();
     }
 
     getPlayer(i) {
@@ -53,6 +73,7 @@ class TRONGame {
 
     start() {
         //this.field = [];
+        this.reset();
         this.then = Date.now();
 
         // Background image
@@ -67,7 +88,6 @@ class TRONGame {
 
         //starts the game -----------
 
-
         this.render();
         this.gameLoop();
     }
@@ -77,21 +97,15 @@ class TRONGame {
     * x y are the pixel on the canvas
     */
 
-
-
-
     update() {
         if (!this.noConstantUpdates)
             this.updateEachPlayer();
-
     }
 
     updateEachPlayer() {
 
         this.players.forEach(p => {
             p.update();
-
-
         });
 
         this.checkWinCondition();
@@ -107,7 +121,7 @@ class TRONGame {
         let alivePlayers = [];
         this.players.forEach(p => {
             if (p.alive)
-            alivePlayers.push(p);
+                alivePlayers.push(p);
         });
 
         // switch(alivePlayers.length){
@@ -124,7 +138,6 @@ class TRONGame {
     gameLoop() {
         let now = Date.now();
         let delta = now - this.then;
-
 
         if (delta >= this.interval || this.noConstantUpdates) {
             this.update();
@@ -148,14 +161,15 @@ class TRONGame {
              this.ctx.drawImage(bgImage, 0, 0);
          } */
 
-        this.ctx.fillStyle = "brown";
         for (let i = 0; i < canvasSize / tileSize; i++) {
             for (let j = 0; j < canvasSize / tileSize; j++) {
-                this.ctx.fillStyle = field[i][j].color;
-                this.ctx.fillRect(i * tileSize, j * tileSize, tileSize, tileSize);
-
+                if (field[i][j].placed) {
+                    this.ctx.fillStyle = field[i][j].color;
+                    this.ctx.fillRect(i * tileSize, j * tileSize, tileSize, tileSize);
+                }
             }
         }
+
 
         this.players.forEach(p => {
             this.ctx.fillStyle = "grey";
@@ -250,7 +264,7 @@ class Player {
     }
 
     update() {
-        if (!this.alive){
+        if (!this.alive) {
             return;
         }
 
