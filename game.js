@@ -134,10 +134,28 @@ class TRONGame {
 
             this.render();
             this.then = now;
-
         }
 
         requestAnimationFrame(this.gameLoop);
+    }
+    //-----------------------------------------------------------------------------
+
+
+    getBoard() {
+        //get the playing field as a 1D-Array
+        let tileCount = this.canvasSize/this.tileSize;
+        let exportField = new Array(tileCount*tileCount);
+
+        //Loop over playing field
+        for (let i = 0; i < tileCount; i++)
+        {
+            for (let n = 0; n < tileCount; n++)
+            {
+                exportField[tileCount*i+n] = this.field[n][i].placed;
+            }
+        }
+        console.log(exportField);
+        return exportField;
     }
 }
 
