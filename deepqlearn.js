@@ -1,4 +1,4 @@
-const convnetjs = require("./convnet.js");
+//const convnetjs = require("./convnet.js");
 
 var deepqlearn = deepqlearn || { REVISION: 'ALPHA' };
 

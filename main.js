@@ -3,6 +3,7 @@ const game = new TRONGame();
 
 const id1 = game.addPlayer("green");
 const id2 = game.addPlayer("red");
+
 //game.start();
 
 window.addEventListener("keydown", doKeyDown, true);
