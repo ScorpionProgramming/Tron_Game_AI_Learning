@@ -1,6 +1,6 @@
 const WIN_REWARD = 100;
 const ALIVE_REWARD = 1;
-const LOSS_PUNISH = -2;
+const LOSS_PUNISH = -100;
 const DRAW_PUNISH = -1;
 
 // Todo for the neural network

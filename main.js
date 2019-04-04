@@ -7,15 +7,17 @@ let idSpieler = [];
 idSpieler[id1] = playerBrain();
 idSpieler[id2] = playerBrain();
 
-
+let element = document.getElementById("info");
 
 function onGameEnd(id) {
     if (id != -1) {
+
         idSpieler[id].backward(WIN_REWARD);
         idSpieler.forEach((s,i) => {
             if (i != id)
                 idSpieler[i].backward(LOSS_PUNISH);
         })
+        idSpieler[id].visSelf(element);
     } else {
         idSpieler.forEach((s,i) => {
 
@@ -24,7 +26,9 @@ function onGameEnd(id) {
     }
 
 
+
     game.reset();
+
 }
 
 
