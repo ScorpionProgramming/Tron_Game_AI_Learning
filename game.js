@@ -13,7 +13,7 @@ class TRONGame {
         this.interval = 1000 / fps;
         this.then = Date.now();
 
-        this.tileSize = 16;
+        this.tileSize = 32;
         this.canvasSize = 512;
         this.players = [];
 
@@ -31,7 +31,7 @@ class TRONGame {
     }
 
     addPlayer(color) {
-        const positions = [{ x: 0, y: 0, dir: "east" }, { x: 31, y: 31, dir: "west" }];
+        const positions = [{ x: 0, y: 0, dir: "east" }, { x: 15, y: 15, dir: "west" }];
         let position = {};
         const {field} = this;
 
@@ -124,11 +124,11 @@ class TRONGame {
                 alivePlayers.push(p);
         });
 
-        switch(alivePlayers.length){
+        /* switch(alivePlayers.length){
             case 0: this.endGame(0, null);
                     break;
             case 1: this.endGame(1, alivePlayers[0]);
-        }
+        } */
     }
 
     //-----------------------------------------------------------------------------

@@ -3,18 +3,44 @@ const game = new TRONGame(false);
 
 const id1 = game.addPlayer("green");
 const id2 = game.addPlayer("red");
+const player1 = playerBrain();
+const player2 = playerBrain();
 
-//game.start();
+game.start();
+
+const movePlayer = (id, action) => {
+    switch (action) {
+        case 1: game.getPlayer(id).moveUp(); break;
+        case 2: game.getPlayer(id).moveLeft(); break;
+        case 3: game.getPlayer(id).moveDown(); break;
+        case 4: game.getPlayer(id).moveRight(); break;
+        default: break;
+    }
+}
+
+const mainLoop = () => {
+    const board = game.getBoard();
+    const action1 = player1.forward(board);
+    const action2 = player2.forward(board);
+    movePlayer(id1, action1);
+    movePlayer(id2, action2);
+}
 
 
-window.addEventListener("keydown", doKeyDown, true);
+
+
+
+
+document.addEventListener("keydown", doKeyDown, true);
 function doKeyDown(e) {
     let key = e.keyCode;
     console.log(key);
     //player1 rot
     //Keys: W A S D
     //Keycodes: 87 65 83 68
+
     switch (key) {
+
         case 87:
             console.log("W pressed");
             game.getPlayer(id1).moveUp();
