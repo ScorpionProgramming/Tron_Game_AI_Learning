@@ -1,12 +1,36 @@
-const game = new TRONGame(false);
-//game.setup();
+const game = new TRONGame(true, onGameEnd);
 
 const id1 = game.addPlayer("green");
 const id2 = game.addPlayer("red");
-const player1 = playerBrain();
-const player2 = playerBrain();
+let idSpieler = [];
 
-//game.start();
+idSpieler[id1] = playerBrain();
+idSpieler[id2] = playerBrain();
+
+
+
+function onGameEnd(id) {
+    if (id != -1) {
+        idSpieler[id].backward(WIN_REWARD);
+        idSpieler.forEach((s,i) => {
+            if (i != id)
+                idSpieler[i].backward(LOSS_PUNISH);
+        })
+    } else {
+        idSpieler.forEach((s,i) => {
+
+            idSpieler[i].backward(DRAW_PUNISH);
+        })
+    }
+
+
+    game.reset();
+}
+
+
+
+game.start();
+
 
 const movePlayer = (id, action) => {
     switch (action) {
@@ -20,21 +44,25 @@ const movePlayer = (id, action) => {
 
 const mainLoop = () => {
     const board = game.getBoard();
-    const action1 = player1.forward(board);
-    const action2 = player2.forward(board);
+    const action1 = idSpieler[id1].forward(board);
+    const action2 = idSpieler[id2].forward(board);
+    //console.log("actions", action1, action2);
+
     movePlayer(id1, action1);
     movePlayer(id2, action2);
+    game.nextUpdate();
+    requestAnimationFrame(mainLoop);
 }
 
 
-
+mainLoop();
 
 
 
 window.addEventListener("keydown", doKeyDown, true);
 function doKeyDown(e) {
     let key = e.keyCode;
-    console.log(key);
+    //console.log(key);
     //player1 rot
     //Keys: W A S D
     //Keycodes: 87 65 83 68

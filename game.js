@@ -4,7 +4,7 @@ class TRONGame {
      *
      * @param {boolean} noConstantUpdates
      */
-    constructor(noConstantUpdates) {
+    constructor(noConstantUpdates, onGameEnd) {
         this.gameLoop = this.gameLoop.bind(this);
         this.buildField = this.buildField.bind(this);
 
@@ -20,6 +20,7 @@ class TRONGame {
 
         this.field = [];
         this.buildField();
+        this.onGameEnd = onGameEnd;
         const { canvasSize } = this;
 
 
@@ -42,7 +43,9 @@ class TRONGame {
         });
 
         let p1 = new Player(position.x, position.y, position.dir, this.field, color);
-        return this.players.push(p1) - 1;
+        const id = this.players.push(p1) - 1;
+        p1.id = id;
+        return id;
     }
 
     buildField() {
@@ -141,11 +144,13 @@ class TRONGame {
     endGame(count, player) {
         this.hasEnded = true;
         if (count === 0) {
-            window.alert("Ein Unentschieden!");
+            //window.alert("Ein Unentschieden!");
+            this.onGameEnd(-1);
             return;
         }
         else {
-            window.alert("Spieler " + player.color + " gewinnt!!");
+            //window.alert("Spieler " + player.color + " gewinnt!!");
+            this.onGameEnd(player.id);
             return;
         }
     };
@@ -217,7 +222,7 @@ class TRONGame {
                 exportField[tileCount * i + n] = this.field[n][i].placed;
             }
         }
-        console.log(exportField);
+        //console.log(exportField);
         return exportField;
     }
 }
@@ -235,9 +240,10 @@ class Player {
         this.field = field;
         this.color = color;
         this.alive = true;
+        this.id = -1;
         field[posX][posY].placed = 1;
         field[posX][posY].color = color;
-        console.log(this.posX + " " + this.posY + " " + this.dir);
+        //console.log(this.posX + " " + this.posY + " " + this.dir);
     }
 
 
@@ -314,7 +320,7 @@ class Player {
         if (this.field[nextPosX] != undefined && this.field[nextPosX][nextPosY] != undefined &&
             this.field[nextPosX][nextPosY].placed !== 1) {
 
-            console.log("moving");
+            //console.log("moving");
 
             this.field[nextPosX][nextPosY].placed = 1;
             this.field[nextPosX][nextPosY].color = this.color;
@@ -326,7 +332,7 @@ class Player {
 
         } else { // here collision
             this.alive = false;
-            console.log(this.color + "BOOOOOOOM");
+            //console.log(this.color + "BOOOOOOOM");
             return true;
         }
 
