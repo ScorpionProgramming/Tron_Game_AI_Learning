@@ -16,6 +16,7 @@ class TRONGame {
         this.tileSize = 16;
         this.canvasSize = 512;
         this.players = [];
+        this.hasEnded = false;
 
         this.field = [];
         this.buildField();
@@ -33,10 +34,10 @@ class TRONGame {
     addPlayer(color) {
         const positions = [{ x: 0, y: 0, dir: "east" }, { x: 31, y: 31, dir: "west" }];
         let position = {};
-        const {field} = this;
+        const { field } = this;
 
         positions.forEach(pos => {
-            if(field[pos.x][pos.y].placed === 0)
+            if (field[pos.x][pos.y].placed === 0)
                 position = pos;
         });
 
@@ -64,6 +65,8 @@ class TRONGame {
             this.addPlayer(p.color);
         });
         this.render();
+        this.hasEnded = false;
+
     }
 
     getPlayer(i) {
@@ -87,7 +90,6 @@ class TRONGame {
 
 
         //starts the game -----------
-
         this.render();
         this.gameLoop();
     }
@@ -103,9 +105,9 @@ class TRONGame {
     }
 
     updateEachPlayer() {
-
+        var collision = false;
         this.players.forEach(p => {
-            p.update();
+            collision = p.update();
         });
 
         this.checkWinCondition();
@@ -120,26 +122,35 @@ class TRONGame {
     checkWinCondition() {
         let alivePlayers = [];
         this.players.forEach(p => {
-            if (p.alive)
+            if (p.alive) {
                 alivePlayers.push(p);
+            }
         });
 
-        switch(alivePlayers.length){
-            case 0: this.endGame(0, null);
-                    break;
-            case 1: this.endGame(1, alivePlayers[0]);
-        }
-    }
-
-    endGame(count, index) {
-        switch(count){
-            case 0: 
-                window.alert("Ein Unentschieden!")
+        switch (alivePlayers.length) {
+            case 0:
+                this.endGame(0, null);
+                break;
             case 1:
-                window.alert("Spieler " + this.players[index].color + " gewinnt!!");
-        };
+                this.endGame(1, alivePlayers[0]);
+        }
+
 
     }
+
+    endGame(count, player) {
+        this.hasEnded = true;
+        if (count === 0) {
+            window.alert("Ein Unentschieden!");
+            return;
+        }
+        else {
+            window.alert("Spieler " + player.color + " gewinnt!!");
+            return;
+        }
+    };
+
+
 
     //-----------------------------------------------------------------------------
     // hier spielt die Musik nichts mehr hier dran anfassen
@@ -155,7 +166,8 @@ class TRONGame {
             this.render();
             this.then = now;
         }
-
+        
+        if(!this.hasEnded)
         requestAnimationFrame(this.gameLoop);
     }
 
@@ -273,6 +285,7 @@ class Player {
         }
     }
 
+    //returns true if collision occured
     update() {
         if (!this.alive) {
             return;
@@ -309,10 +322,12 @@ class Player {
             this.posX = nextPosX;
             this.posY = nextPosY;
 
+            return false;
 
         } else { // here collision
             this.alive = false;
             console.log(this.color + "BOOOOOOOM");
+            return true;
         }
 
 
