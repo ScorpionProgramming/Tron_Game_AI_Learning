@@ -6,6 +6,7 @@ const id2 = game.addPlayer("red");
 
 //game.start();
 
+
 window.addEventListener("keydown", doKeyDown, true);
 function doKeyDown(e) {
     let key = e.keyCode;
