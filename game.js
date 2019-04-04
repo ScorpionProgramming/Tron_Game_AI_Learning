@@ -108,13 +108,14 @@ class TRONGame {
         this.players.forEach(p => {
             if (p.alive)
             alivePlayers.push(p);
+            p.indexOf();
         });
 
-        // switch(alivePlayers.length){
-        //     case 0: this.endGame(0, null);
-        //             break;
-        //     case 1: this.endGame(1, alivePlayers[0]);
-        // }
+        switch(alivePlayers.length){
+            case 0: this.endGame(0, null);
+                    break;
+            case 1: this.endGame(1, alivePlayers[0]);
+        }
     }
 
     //-----------------------------------------------------------------------------
