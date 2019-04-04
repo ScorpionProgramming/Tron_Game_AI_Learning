@@ -131,6 +131,16 @@ class TRONGame {
         }
     }
 
+    endGame(count, index) {
+        switch(count){
+            case 0: 
+                window.alert("Ein Unentschieden!")
+            case 1:
+                window.alert("Spieler " + this.players[index].color + " gewinnt!!");
+        };
+
+    }
+
     //-----------------------------------------------------------------------------
     // hier spielt die Musik nichts mehr hier dran anfassen
     //-----------------------------------------------------------------------------
