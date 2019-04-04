@@ -26,7 +26,7 @@ const playerBrain = () => {
     var tdtrainer_options = { learning_rate: 0.001, momentum: 0.0, batch_size: 64, l2_decay: 0.01 };
 
     var opt = {};
-    opt.temporal_window = temporal_window;
+    opt.temporal_window = 8;
     opt.experience_size = 30000;
     opt.start_learn_threshold = 1000;
     opt.gamma = 0.7;

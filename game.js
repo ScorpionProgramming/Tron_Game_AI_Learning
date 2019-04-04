@@ -9,7 +9,7 @@ class TRONGame {
         this.buildField = this.buildField.bind(this);
 
         this.noConstantUpdates = noConstantUpdates;
-        let fps = 10;
+        let fps = 5;
         this.interval = 1000 / fps;
         this.then = Date.now();
 

@@ -6,7 +6,7 @@ const id2 = game.addPlayer("red");
 const player1 = playerBrain();
 const player2 = playerBrain();
 
-game.start();
+//game.start();
 
 const movePlayer = (id, action) => {
     switch (action) {
@@ -31,7 +31,7 @@ const mainLoop = () => {
 
 
 
-document.addEventListener("keydown", doKeyDown, true);
+window.addEventListener("keydown", doKeyDown, true);
 function doKeyDown(e) {
     let key = e.keyCode;
     console.log(key);
