@@ -33,13 +33,19 @@ class TRONGame {
     }
 
     addPlayer(color) {
+
         const positions = [{ x: 0, y: 0, dir: "east" }, { x: 15, y: 15, dir: "west" }];
         let position = {};
         const { field } = this;
 
-        positions.forEach(pos => {
-            if (field[pos.x][pos.y].placed === 0)
+        //for (let i = 0; i < positions.length; i++) {
+        //let pos = positions[i];
+        positions.some(pos => {
+            if (field[pos.x][pos.y].placed === 0) {
                 position = pos;
+                return true;
+            }
+            return false;
         });
 
         let p1 = new Player(position.x, position.y, position.dir, this.field, color);
@@ -113,7 +119,7 @@ class TRONGame {
             collision = p.update();
         });
 
-        this.checkWinCondition();
+        //this.checkWinCondition();
     }
 
     nextUpdate() {
@@ -137,8 +143,6 @@ class TRONGame {
             case 1:
                 this.endGame(1, alivePlayers[0]);
         }
-
-
     }
 
     endGame(count, player) {
@@ -172,8 +176,8 @@ class TRONGame {
             this.then = now;
         }
 
-        if(!this.hasEnded)
-        requestAnimationFrame(this.gameLoop);
+        if (!this.hasEnded)
+            requestAnimationFrame(this.gameLoop);
     }
 
     //drawfunktionen und so ...
@@ -197,7 +201,7 @@ class TRONGame {
             }
         }
 
-
+        // Köpfe Malen
         this.players.forEach(p => {
             this.ctx.fillStyle = "grey";
             const x = p.posX * tileSize + (tileSize / 4);
@@ -211,20 +215,54 @@ class TRONGame {
     //-----------------------------------------------------------------------------
 
 
-    getBoard() {
-        //get the playing field as a 1D-Array
+    getBoard(id) {
         let tileCount = this.canvasSize / this.tileSize;
         let exportField = new Array(tileCount * tileCount);
-
-        //Loop over playing field
         for (let i = 0; i < tileCount; i++) {
             for (let n = 0; n < tileCount; n++) {
                 exportField[tileCount * i + n] = this.field[n][i].placed;
             }
         }
-        //console.log(exportField);
+        const player = this.players.find(p => p.id == id);
+        if (player) {
+            let pos = [player.posX / (tileCount - 1), player.posY / (tileCount - 1)];
+            exportField.push(...pos);
+        } else {
+            throw "no ID";
+        }
         return exportField;
     }
+
+
+    /* getBoard(id) {
+        //get the playing field as a 1D-Array
+        let tileCount = this.canvasSize / this.tileSize;
+        let exportField = new Array((tileCount + 2) * (tileCount + 2)).map(v => 1);
+ 
+        //Loop over playing field
+        for (let i = 0; i < tileCount + 2; i++) {
+            for (let n = 0; n < tileCount + 2; n++) {
+                if (n == tileCount + 1 || i == tileCount + 1 || i == 0 || n == 0) {
+ 
+                    exportField[(tileCount + 2) * i + n] = 1;
+                } else {
+ 
+                    exportField[(tileCount + 2) * i + n] = this.field[n - 1][i - 1].placed;
+                }
+            }
+        }
+ 
+        const player = this.players.find(p => p.id == id);
+        if (player) {
+            let pos = [player.posX / (tileCount-1), player.posY / (tileCount-1)];
+            exportField.push(...pos);
+        } else {
+            throw "no ID";
+        }
+ 
+        //console.log(exportField);
+        return exportField;
+    } */
 }
 
 
@@ -246,25 +284,35 @@ class Player {
         //console.log(this.posX + " " + this.posY + " " + this.dir);
     }
 
+    logMove(direction) {
+        console.log(this.id, this.color, direction);
+    }
 
     moveUp() {
         //if (this.dir !== "south")
         this.nextDir = "north";
+        this.logMove(this.nextDir);
+
     }
 
     moveLeft() {
         //if (this.dir !== "east")
         this.nextDir = "west";
+        this.logMove(this.nextDir);
+
     }
 
     moveDown() {
         //if (this.dir !== "north")
         this.nextDir = "south";
+        this.logMove(this.nextDir);
+
     }
 
     moveRight() {
         //if (this.dir !== "west")
         this.nextDir = "east";
+        this.logMove(this.nextDir);
     }
 
     checkDirection() {
@@ -324,6 +372,7 @@ class Player {
 
             this.field[nextPosX][nextPosY].placed = 1;
             this.field[nextPosX][nextPosY].color = this.color;
+            this.field[nextPosX][nextPosY].playerId = this.id;
 
             this.posX = nextPosX;
             this.posY = nextPosY;
