@@ -47,10 +47,10 @@ class TRONGame {
             }
             return false;
         });
-
-        let p1 = new Player(position.x, position.y, position.dir, this.field, color);
-        const id = this.players.push(p1) - 1;
-        p1.id = id;
+        const id = this.players.length;
+        let p1 = new Player(position.x, position.y, position.dir, this.field, color, id);
+        const testId = this.players.push(p1) - 1;
+        if (testId != id) throw "ungeleiche ID";
         return id;
     }
 
@@ -61,7 +61,7 @@ class TRONGame {
         for (let i = 0; i < canvasSize / tileSize; i++) {
             this.field[i] = [];
             for (let j = 0; j < canvasSize / tileSize; j++) {
-                this.field[i][j] = { placed: 0, color: "lightgrey", val: 0 };
+                this.field[i][j] = { placed: 0, color: "lightgrey", playerId: -1 };
             }
         }
     }
@@ -234,19 +234,29 @@ class TRONGame {
 
     getBoard(id) {
         let tileCount = this.canvasSize / this.tileSize;
-        let exportField = new Array(tileCount * tileCount);
+        let exportField = [];
         for (let i = 0; i < tileCount; i++) {
             for (let n = 0; n < tileCount; n++) {
-                exportField[tileCount * i + n] = this.field[n][i].placed;
+                const place = this.field[n][i];
+
+                if (place.playerId == -1) {
+                    exportField.push(...[1, 0, 0]);
+                } else if (place.playerId == id) {
+                    exportField.push(...[0, 1, 0]);
+                } else {
+                    exportField.push(...[0, 0, 1]);
+                }
+                //exportField[tileCount * i + n] = place.placed;
             }
         }
-        const player = this.players.find(p => p.id == id);
+
+        /* const player = this.players.find(p => p.id == id);
         if (player) {
             let pos = [player.posX / (tileCount - 1), player.posY / (tileCount - 1)];
             exportField.push(...pos);
         } else {
             throw "no ID";
-        }
+        } */
         return exportField;
     }
 
@@ -287,7 +297,7 @@ class TRONGame {
 
 class Player {
 
-    constructor(posX, posY, dir, field, color) {
+    constructor(posX, posY, dir, field, color, id) {
         this.posX = posX;
         this.posY = posY;
         this.dir = dir;
@@ -295,10 +305,17 @@ class Player {
         this.field = field;
         this.color = color;
         this.alive = true;
-        this.id = -1;
+        this.id = id;
+        this.setPlayerOnField();
+        //console.log(this.posX + " " + this.posY + " " + this.dir);
+    }
+
+    setPlayerOnField() {
+        const {field, posX, posY, color, id} = this;
+
         field[posX][posY].placed = 1;
         field[posX][posY].color = color;
-        //console.log(this.posX + " " + this.posY + " " + this.dir);
+        field[posX][posY].playerId = id;
     }
 
     logMove(direction) {
@@ -387,12 +404,15 @@ class Player {
 
             //console.log("moving");
 
-            this.field[nextPosX][nextPosY].placed = 1;
+            /* this.field[nextPosX][nextPosY].placed = 1;
             this.field[nextPosX][nextPosY].color = this.color;
-            this.field[nextPosX][nextPosY].playerId = this.id;
+            this.field[nextPosX][nextPosY].playerId = this.id; */
 
             this.posX = nextPosX;
             this.posY = nextPosY;
+
+
+            this.setPlayerOnField();
 
             return false;
 

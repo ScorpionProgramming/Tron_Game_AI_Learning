@@ -1,5 +1,5 @@
 const WIN_REWARD = 50;
-const ALIVE_REWARD = 1;
+const ALIVE_REWARD = 5;
 const LOSS_PUNISH = -50;
 const DRAW_PUNISH = -25;
 
@@ -7,7 +7,7 @@ const DRAW_PUNISH = -25;
 // example from : https://cs.stanford.edu/people/karpathy/convnetjs/demo/rldemo.html
 
 const playerBrain = () => {
-    var num_inputs = (16 * 16) + 2; // 9 eyes, each sees 3 numbers (wall, green, red thing proximity)
+    var num_inputs = (16 * 16 * 3); // 9 eyes, each sees 3 numbers (wall, green, red thing proximity)
     var num_actions = 4; // 5 possible angles agent can turn
     var temporal_window = 8; // amount of temporal memory. 0 = agent lives in-the-moment :)
     var network_size = num_inputs * temporal_window + num_actions * temporal_window + num_inputs;
@@ -18,11 +18,11 @@ const playerBrain = () => {
     // to just insert simple relu hidden layers.
     var layer_defs = [];
     layer_defs.push({ type: 'input', out_sx: 1, out_sy: 1, out_depth: network_size });
-    layer_defs.push({ type: 'fc', num_neurons: 50, activation: 'relu' });
-    layer_defs.push({ type: 'fc', num_neurons: 50, activation: 'relu' });
-    /* layer_defs.push({ type: 'conv', sx: 1, filters: 16, stride: 1, pad: 0, activation: 'relu' });
+    /* layer_defs.push({ type: 'fc', num_neurons: 50, activation: 'relu' });
+    layer_defs.push({ type: 'fc', num_neurons: 50, activation: 'relu' }); */
     layer_defs.push({ type: 'conv', sx: 1, filters: 16, stride: 1, pad: 0, activation: 'relu' });
-    layer_defs.push({ type: 'fc', num_neurons: 30, activation: 'relu' });*/
+    layer_defs.push({ type: 'conv', sx: 1, filters: 16, stride: 1, pad: 0, activation: 'relu' });
+    layer_defs.push({ type: 'fc', num_neurons: 30, activation: 'relu' });
     layer_defs.push({ type: 'regression', num_neurons: num_actions });
 
     // options for the Temporal Difference learner that trains the above net
