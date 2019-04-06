@@ -9,6 +9,9 @@ idSpieler[id2] = playerBrain();
 
 let element = document.getElementById("info");
 
+
+var train = true;
+
 function onGameEnd(id) {
     if (id != -1) {
 
@@ -25,7 +28,7 @@ function onGameEnd(id) {
         })
     }
 
-
+    
 
     game.reset();
 
@@ -45,6 +48,20 @@ function loadNet(id){
     var json   = JSON.parse(string);
 
     idSpieler[id].value_net.fromJSON(json);    
+}
+
+function startLearn() {
+    train = true;
+     idSpieler.forEach((s,i) => {
+        idSpieler[i].learning = true;
+    })
+}
+
+function stopLearn() {
+    train = false;
+    idSpieler.forEach((s,i) => {
+        idSpieler[i].learning = false;
+    })
 }
 
 game.start();

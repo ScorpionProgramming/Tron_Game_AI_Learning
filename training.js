@@ -1,7 +1,7 @@
-const WIN_REWARD = 100;
+const WIN_REWARD = 5;
 const ALIVE_REWARD = 1;
-const LOSS_PUNISH = -100;
-const DRAW_PUNISH = -1;
+const LOSS_PUNISH = -30;
+const DRAW_PUNISH = -10;
 
 // Todo for the neural network
 // example from : https://cs.stanford.edu/people/karpathy/convnetjs/demo/rldemo.html
@@ -18,8 +18,8 @@ const playerBrain = () => {
     // to just insert simple relu hidden layers.
     var layer_defs = [];
     layer_defs.push({ type: 'input', out_sx: 1, out_sy: 1, out_depth: network_size });
-    layer_defs.push({ type: 'fc', num_neurons: 50, activation: 'relu' });
-    layer_defs.push({ type: 'fc', num_neurons: 50, activation: 'relu' });
+    layer_defs.push({ type: 'fc', num_neurons: 8, activation: 'relu' }); // 50
+    layer_defs.push({ type: 'fc', num_neurons: 8, activation: 'relu' }); // 50
     layer_defs.push({ type: 'regression', num_neurons: num_actions });
 
     // options for the Temporal Difference learner that trains the above net
@@ -29,12 +29,12 @@ const playerBrain = () => {
     var opt = {};
     opt.temporal_window = temporal_window;
     opt.experience_size = 30000;
-    opt.start_learn_threshold = 1000;
-    opt.gamma = 0.7;
+    opt.start_learn_threshold = 2000; //1000
+    opt.gamma = 0.6;
     opt.learning_steps_total = 200000;
     opt.learning_steps_burnin = 3000;
-    opt.epsilon_min = 0.05;
-    opt.epsilon_test_time = 0.05;
+    opt.epsilon_min = 0.001;
+    opt.epsilon_test_time = 0.01;
     opt.layer_defs = layer_defs;
     opt.tdtrainer_options = tdtrainer_options;
 

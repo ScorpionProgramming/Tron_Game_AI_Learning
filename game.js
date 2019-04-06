@@ -33,14 +33,22 @@ class TRONGame {
     }
 
     addPlayer(color) {
-        const positions = [{ x: 0, y: 0, dir: "east" }, { x: 15, y: 15, dir: "west" }];
+        const positions = [{ x: 0, y: 0, dir: "east" }, { x: 15, y: 15, dir: "west" }, {x: 0, y: 15, dir: "north"}, {x: 15, y: 0, dir: "south"}];
         let position = {};
         const { field } = this;
+        let pos;
+        
+        do{
+            pos = positions[Math.floor(Math.random()*positions.length)];
+        }while(field[pos.x][pos.y].placed === 1);
 
+        position = pos;
+        /*
         positions.forEach(pos => {
             if (field[pos.x][pos.y].placed === 0)
                 position = pos;
         });
+        */
 
         let p1 = new Player(position.x, position.y, position.dir, this.field, color);
         const id = this.players.push(p1) - 1;
@@ -67,7 +75,7 @@ class TRONGame {
         oldPlayers.forEach(p => {
             this.addPlayer(p.color);
         });
-        this.render();
+        //this.render();
         this.hasEnded = false;
 
     }
@@ -168,7 +176,9 @@ class TRONGame {
         if (delta >= this.interval || this.noConstantUpdates) {
             this.update();
 
-            this.render();
+            if(train === false){
+                this.render();
+            }
             this.then = now;
         }
 
