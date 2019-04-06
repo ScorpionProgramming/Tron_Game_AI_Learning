@@ -42,8 +42,18 @@
     <button onclick="training.train()">StartTraining</button>
     <button onclick="game.nextUpdate()">next Step</button>
     <button onclick="game.reset()">reset</button>
+
     <button>LoadNet</button>
     <div id="info"></div>
+
+    <button onclick="loadNet(0)">Load Network Player1</button>
+    <button onclick="saveNet(0)">Save Network Player1</button>
+
+    <button onclick="loadNet(1)">Load Network Player2</button>
+    <button onclick="saveNet(1)">Save Network Player2</button>
+
+    <textarea id = 'tt' style="width:100%; height:200px;"></textarea>
+
     <script src="game.js"></script>
     <script src="convnet.js"></script>
     <script src="deepqlearn.js"></script>

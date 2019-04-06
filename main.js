@@ -31,7 +31,21 @@ function onGameEnd(id) {
 
 }
 
+// saves a Network from specific player (id) 
+function saveNet(id){
+    var json    = idSpieler[id].value_net.toJSON();
+    var string  = JSON.stringify(json);
 
+    document.getElementById('tt').value = string;
+}
+
+//loads a Network for specific player (id) 
+function loadNet(id){
+    var string = document.getElementById('tt').value;
+    var json   = JSON.parse(string);
+
+    idSpieler[id].value_net.fromJSON(json);    
+}
 
 game.start();
 
