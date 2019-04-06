@@ -4,7 +4,7 @@ class TRONGame {
      *
      * @param {boolean} noConstantUpdates
      */
-    constructor(noConstantUpdates, onGameEnd) {
+    constructor(noConstantUpdates, ratePlayers) {
         this.gameLoop = this.gameLoop.bind(this);
         this.buildField = this.buildField.bind(this);
 
@@ -20,7 +20,7 @@ class TRONGame {
 
         this.field = [];
         this.buildField();
-        this.onGameEnd = onGameEnd;
+        this.ratePlayers = ratePlayers;
         const { canvasSize } = this;
 
 
@@ -100,7 +100,8 @@ class TRONGame {
 
         //starts the game -----------
         this.render();
-        this.gameLoop();
+        if (!this.noConstantUpdates)
+            this.gameLoop();
     }
 
     /**
@@ -125,9 +126,15 @@ class TRONGame {
     nextUpdate() {
         if (this.noConstantUpdates) {
             this.updateEachPlayer();
+
         }
+        this.render();
+        return this.checkWinCondition();
     }
 
+    /**
+     * returns true wenn es weiter geht sont false;
+     */
     checkWinCondition() {
         let alivePlayers = [];
         this.players.forEach(p => {
@@ -138,10 +145,20 @@ class TRONGame {
 
         switch (alivePlayers.length) {
             case 0:
-                this.endGame(0, null);
-                break;
+                //es gab ein Unentschieden
+                this.ratePlayers(0);
+                //this.endGame(0, null);
+                return false;
             case 1:
-                this.endGame(1, alivePlayers[0]);
+                //Es gab einen Gewinner
+                this.ratePlayers(1, alivePlayers[0].id);
+                //this.endGame(1, alivePlayers[0]);
+                return false;
+            default:
+                // es geht weiter
+                // TODO problem bei mehr als zwei spielern
+                this.ratePlayers(99);
+                return true;
         }
     }
 
@@ -238,20 +255,20 @@ class TRONGame {
         //get the playing field as a 1D-Array
         let tileCount = this.canvasSize / this.tileSize;
         let exportField = new Array((tileCount + 2) * (tileCount + 2)).map(v => 1);
- 
+
         //Loop over playing field
         for (let i = 0; i < tileCount + 2; i++) {
             for (let n = 0; n < tileCount + 2; n++) {
                 if (n == tileCount + 1 || i == tileCount + 1 || i == 0 || n == 0) {
- 
+
                     exportField[(tileCount + 2) * i + n] = 1;
                 } else {
- 
+
                     exportField[(tileCount + 2) * i + n] = this.field[n - 1][i - 1].placed;
                 }
             }
         }
- 
+
         const player = this.players.find(p => p.id == id);
         if (player) {
             let pos = [player.posX / (tileCount-1), player.posY / (tileCount-1)];
@@ -259,7 +276,7 @@ class TRONGame {
         } else {
             throw "no ID";
         }
- 
+
         //console.log(exportField);
         return exportField;
     } */

@@ -1,5 +1,5 @@
-const game = new TRONGame(true, onGameEnd);
-
+const game = new TRONGame(true, onRating);
+let stopped = false;
 const id1 = game.addPlayer("green");
 const id2 = game.addPlayer("red");
 let idSpieler = [];
@@ -10,13 +10,41 @@ idSpieler[id2] = playerBrain();
 let element_p1 = document.getElementById("info_p1");
 let element_p2 = document.getElementById("info_p2");
 
-let steps = 0;
 
-function onGameEnd(id) {
+function onRating(state, id) {
 
-    if (id != -1) {
-        console.log(id, "WON", steps);
-        idSpieler[id].backward(WIN_REWARD + steps);
+
+    switch (state) {
+        //unentschieden id = undefined
+        case 0:
+            console.log("DRAW");
+            idSpieler.forEach((s, i) => {
+
+                idSpieler[i].backward(DRAW_PUNISH);
+            })
+            break;
+
+        //ein gewinner id = gewinner
+        case 1:
+            idSpieler[id].backward(WIN_REWARD);
+            idSpieler.forEach((s, i) => {
+                if (i != id)
+                    idSpieler[i].backward(LOSS_PUNISH);
+            })
+            break;
+
+        //es geht weiter id = undefined
+        case 99:
+            idSpieler.forEach((s, i) => {
+                idSpieler[i].backward(ALIVE_REWARD);
+            })
+            break;
+
+    }
+
+
+    /* if (id != -1) {
+        idSpieler[id].backward(WIN_REWARD);
         idSpieler.forEach((s, i) => {
             if (i != id)
                 idSpieler[i].backward(LOSS_PUNISH);
@@ -28,15 +56,16 @@ function onGameEnd(id) {
 
             idSpieler[i].backward(DRAW_PUNISH);
         })
-    }
-    steps = 0;
-    const p1 = idSpieler[id1];
-    const p2 = idSpieler[id2];
-    p1.visSelf(element_p1);
-    p2.visSelf(element_p2);
+    } */
+    if (state == 0 || state == 1) {
+        const p1 = idSpieler[id1];
+        const p2 = idSpieler[id2];
+        p1.visSelf(element_p1);
+        p2.visSelf(element_p2);
 
-    game.reset();
-    console.clear();
+        game.reset();
+        console.clear();
+    }
 }
 game.start();
 
@@ -47,7 +76,7 @@ const movePlayer = (id, action) => {
         case 1: game.getPlayer(id).moveLeft(); break;
         case 2: game.getPlayer(id).moveDown(); break;
         case 3: game.getPlayer(id).moveRight(); break;
-        default: console.warn("WRONG INPUT", id);break;
+        default: console.warn("WRONG INPUT", id); break;
     }
 }
 
@@ -61,15 +90,22 @@ const mainLoop = () => {
     movePlayer(id1, action1);
     movePlayer(id2, action2);
     game.nextUpdate();
-    steps++;
-    requestAnimationFrame(mainLoop);
+
+
+    if (!stopped)
+        requestAnimationFrame(mainLoop);
 }
 
+const toggleLoop = () => {
+    stopped = !stopped;
+
+    (stopped ? {} : mainLoop());
+}
 
 mainLoop();
 
 
-/* 
+/*
 window.addEventListener("keydown", doKeyDown, true);
 function doKeyDown(e) {
     let key = e.keyCode;
@@ -113,7 +149,7 @@ function doKeyDown(e) {
             break;
         default:
             break;
-    } 
+    }
 
     //player2 blau
     //keys: I J K L

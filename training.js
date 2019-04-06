@@ -1,7 +1,7 @@
-const WIN_REWARD = 1;
+const WIN_REWARD = 50;
 const ALIVE_REWARD = 1;
-const LOSS_PUNISH = -1;
-const DRAW_PUNISH = -1;
+const LOSS_PUNISH = -50;
+const DRAW_PUNISH = -25;
 
 // Todo for the neural network
 // example from : https://cs.stanford.edu/people/karpathy/convnetjs/demo/rldemo.html
@@ -21,7 +21,7 @@ const playerBrain = () => {
     layer_defs.push({ type: 'fc', num_neurons: 50, activation: 'relu' });
     layer_defs.push({ type: 'fc', num_neurons: 50, activation: 'relu' });
     /* layer_defs.push({ type: 'conv', sx: 1, filters: 16, stride: 1, pad: 0, activation: 'relu' });
-    layer_defs.push({ type: 'conv', sx: 1, filters: 16, stride: 1, pad: 0, activation: 'relu' }); 
+    layer_defs.push({ type: 'conv', sx: 1, filters: 16, stride: 1, pad: 0, activation: 'relu' });
     layer_defs.push({ type: 'fc', num_neurons: 30, activation: 'relu' });*/
     layer_defs.push({ type: 'regression', num_neurons: num_actions });
 
