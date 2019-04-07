@@ -9,7 +9,7 @@ const DRAW_PUNISH = -25;
 const playerBrain = () => {
     var num_inputs = (16 * 16 * 3); // 9 eyes, each sees 3 numbers (wall, green, red thing proximity)
     var num_actions = 4; // 5 possible angles agent can turn
-    var temporal_window = 8; // amount of temporal memory. 0 = agent lives in-the-moment :)
+    var temporal_window = 0; // amount of temporal memory. 0 = agent lives in-the-moment :)
     var network_size = num_inputs * temporal_window + num_actions * temporal_window + num_inputs;
 
     // the value function network computes a value of taking any of the possible actions

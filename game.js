@@ -235,6 +235,8 @@ class TRONGame {
     getBoard(id) {
         let tileCount = this.canvasSize / this.tileSize;
         let exportField = [];
+
+
         for (let i = 0; i < tileCount; i++) {
             for (let n = 0; n < tileCount; n++) {
                 const place = this.field[n][i];
@@ -242,9 +244,17 @@ class TRONGame {
                 if (place.playerId == -1) {
                     exportField.push(...[1, 0, 0]);
                 } else if (place.playerId == id) {
-                    exportField.push(...[0, 1, 0]);
+                    let isHead = 0;
+                    this.players.forEach(p => (p.id == id && p.posX == n && p.posY == i) ? isHead = 1 : {});
+                    exportField.push(...[0, 1 + isHead, 0]);
                 } else {
-                    exportField.push(...[0, 0, 1]);
+                    let isHead = 0;
+                    this.players.some(p => {
+                        if (p.id != id && p.posX == n && p.posY == i) {
+                            isHead = 0.5; return true;
+                        }
+                    });
+                    exportField.push(...[0, 0, 1 + isHead]);
                 }
                 //exportField[tileCount * i + n] = place.placed;
             }
@@ -311,7 +321,7 @@ class Player {
     }
 
     setPlayerOnField() {
-        const {field, posX, posY, color, id} = this;
+        const { field, posX, posY, color, id } = this;
 
         field[posX][posY].placed = 1;
         field[posX][posY].color = color;

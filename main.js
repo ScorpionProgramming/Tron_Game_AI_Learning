@@ -1,5 +1,7 @@
+
 const game = new TRONGame(true, onRating);
 let stopped = false;
+let learning = true;
 const id1 = game.addPlayer("green");
 const id2 = game.addPlayer("red");
 let idSpieler = [];
@@ -92,14 +94,20 @@ const mainLoop = () => {
     game.nextUpdate();
 
 
+
     if (!stopped)
-        requestAnimationFrame(mainLoop);
+        //requestAnimationFrame(mainLoop);
+        setTimeout(mainLoop, learning ? 1 : 500);
 }
 
 const toggleLoop = () => {
     stopped = !stopped;
-
     (stopped ? {} : mainLoop());
+}
+
+const toggleLearning = () => {
+    learning = !learning;
+    idSpieler.forEach(s => s.learning = learning);
 }
 
 mainLoop();
