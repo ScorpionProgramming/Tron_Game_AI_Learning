@@ -33,7 +33,7 @@ class TRONGame {
     }
 
     addPlayer(color) {
-        const positions = [{ x: 0, y: 0, dir: "east" }, { x: 15, y: 15, dir: "west" }, {x: 0, y: 15, dir: "north"}, {x: 15, y: 0, dir: "south"}];
+        const positions = [{ x: 2, y: 2, dir: "east" }, { x: 13, y: 13, dir: "west" }, {x: 2, y: 13, dir: "north"}, {x: 13, y: 2, dir: "south"}];
         let position = {};
         const { field } = this;
         let pos;
