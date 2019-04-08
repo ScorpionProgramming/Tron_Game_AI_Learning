@@ -221,7 +221,7 @@ class TRONGame {
     //-----------------------------------------------------------------------------
 
 
-    getBoard() {
+    getBoard(id) {
         //get the playing field as a 1D-Array
         let tileCount = this.canvasSize / this.tileSize;
         let exportField = new Array(tileCount * tileCount);
@@ -232,6 +232,10 @@ class TRONGame {
                 exportField[tileCount * i + n] = this.field[n][i].placed;
             }
         }
+
+        let pos = [this.getPlayer(id).getPosX(), this.getPlayer(id).getPosY()];
+        exportField.push(...pos);
+
         //console.log(exportField);
         return exportField;
     }
@@ -256,6 +260,13 @@ class Player {
         //console.log(this.posX + " " + this.posY + " " + this.dir);
     }
 
+    getPosX(){
+        return this.posX;
+    }
+
+    getPosY(){
+        return this.posY;
+    }
 
     moveUp() {
         //if (this.dir !== "south")
