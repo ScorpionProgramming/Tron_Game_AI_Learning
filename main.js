@@ -114,8 +114,6 @@ const movePlayer = (id, action) => {
 }
 
 const mainLoop = () => {
-    //const board1 = game.getBoard(id1);
-    //const board2 = game.getBoard(id2);
     const board1 = game.getBoard_new(id1, 5);
     const board2 = game.getBoard_new(id2, 5);
     const action1 = idSpieler[id1].forward(board1);

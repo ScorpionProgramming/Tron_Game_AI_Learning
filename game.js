@@ -9,18 +9,21 @@ class TRONGame {
         this.buildField = this.buildField.bind(this);
 
         this.noConstantUpdates = noConstantUpdates;
-        let fps = 5;
-        this.interval = 1000 / fps;
-        this.then = Date.now();
+        let fps         = 5;
+        this.interval   = 1000 / fps;
+        this.then       = Date.now();
 
-        this.tileSize = 32;
+        this.tileSize   = 32;
         this.canvasSize = 512;
-        this.players = [];
-        this.hasEnded = false;
+        this.players    = [];
+        this.hasEnded   = false;
 
-        this.field = [];
+        this.field      = [];
+        this.padField   = [];
+
+
         this.buildField();
-        this.onGameEnd = onGameEnd;
+        this.onGameEnd  = onGameEnd;
         const { canvasSize } = this;
 
 
@@ -68,7 +71,29 @@ class TRONGame {
         }
     }
 
-    buildField_pad(){}
+    buildField_pad(size) {
+        //get the playing field as a 1D-Array
+        let tileCount = this.canvasSize / this.tileSize;
+        //tileCount = tileCount+size-1; // create padding around field
+        
+        this.padField = [];
+        let pad = (size-1) / 2;
+
+        //Init array padfield
+        for(let x = 0; x < tileCount+size-1; x++){
+            this.padField[x] = [];
+            for(let y = 0; y < tileCount+size-1; y++){
+                if(x < pad || y < pad || y >= tileCount+pad || x >= tileCount+pad){
+                    this.padField[x][y] = 1;
+                    //console.log(x +" "+ y +" "+ padField[x][y]);
+                }else{
+                    //console.log((x-pad)+" "+(y-pad));
+                    this.padField[x][y] = this.field[(x-pad)][(y-pad)].placed;
+                    //console.log("OK");
+                }
+            }
+        }
+    }
 
     reset() {
         this.buildField();
@@ -244,36 +269,21 @@ class TRONGame {
 
 
     getBoard_new(id, size) {
-        //get the playing field as a 1D-Array
-        let tileCount = this.canvasSize / this.tileSize;
-        //tileCount = tileCount+size-1; // create padding around field
-        
-        let padField = [];
-        let pad = (size-1) / 2;
 
         let exportField = new Array(size * size);
+        let pad = (size - 1) / 2;
 
-        //Init array padfield
-        for(let x = 0; x < tileCount+size-1; x++){
-            padField[x] = [];
-            for(let y = 0; y < tileCount+size-1; y++){
-                if(x <= pad || y <= pad || y >= tileCount+pad || x >= tileCount+pad){
-                    padField[x][y] = 1;
-                    //console.log(x +" "+ y +" "+ padField[x][y]);
-                }else{
-                    //console.log((y-pad)+" "+(x-pad)+" "+this.field[x-pad][y-pad].placed);
-                    padField[x][y] = this.field[x-pad][y-pad].placed;
-                }
-            }
-        }
+        this.buildField_pad(size);
 
         for(let x = 0; x < size; x++){
             for(let y = 0; y < size; y++){
                 let pl = this.getPlayer(id);
-                exportField[size * x + y] = padField[(pl.getPosX()+pad)][(pl.getPosY()+pad)].placed;
+                //console.log(pl.getPosX() +" "+pl.getPosY() + " X: " + x + " Y: " + y + " Pad: " + pad);
+                //console.log(this.padField[(pl.getPosX()+pad-(x-pad))][(pl.getPosY()+pad-(y-pad))]);
+                exportField[size * x + y] = this.padField[(pl.getPosX()+pad-(x-pad))][(pl.getPosY()+pad-(y-pad))];
             }
         }
-
+        //console.log(exportField);
         return exportField;
     }
 }
