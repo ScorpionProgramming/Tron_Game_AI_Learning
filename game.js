@@ -68,6 +68,8 @@ class TRONGame {
         }
     }
 
+    buildField_pad(){}
+
     reset() {
         this.buildField();
         const oldPlayers = [...this.players];
@@ -237,6 +239,41 @@ class TRONGame {
         exportField.push(...pos);
 
         //console.log(exportField);
+        return exportField;
+    }
+
+
+    getBoard_new(id, size) {
+        //get the playing field as a 1D-Array
+        let tileCount = this.canvasSize / this.tileSize;
+        //tileCount = tileCount+size-1; // create padding around field
+        
+        let padField = [];
+        let pad = (size-1) / 2;
+
+        let exportField = new Array(size * size);
+
+        //Init array padfield
+        for(let x = 0; x < tileCount+size-1; x++){
+            padField[x] = [];
+            for(let y = 0; y < tileCount+size-1; y++){
+                if(x <= pad || y <= pad || y >= tileCount+pad || x >= tileCount+pad){
+                    padField[x][y] = 1;
+                    //console.log(x +" "+ y +" "+ padField[x][y]);
+                }else{
+                    //console.log((y-pad)+" "+(x-pad)+" "+this.field[x-pad][y-pad].placed);
+                    padField[x][y] = this.field[x-pad][y-pad].placed;
+                }
+            }
+        }
+
+        for(let x = 0; x < size; x++){
+            for(let y = 0; y < size; y++){
+                let pl = this.getPlayer(id);
+                exportField[size * x + y] = padField[(pl.getPosX()+pad)][(pl.getPosY()+pad)].placed;
+            }
+        }
+
         return exportField;
     }
 }

@@ -9,6 +9,7 @@ idSpieler[id2] = playerBrain();
 
 let element = document.getElementById("info");
 
+var do_count = true;
 
 var train = true;
 
@@ -26,7 +27,7 @@ function onGameEnd(id) {
 
     if (id != -1) {
 
-        if(rounds - 1000 > 0 && rounds % 100 === 0){
+        if(rounds - 1500 > 0 && rounds % 100 === 0){
             let reward = Math.abs(p1_win - p2_win);
             console.clear();
             if(p1_win > p2_win){
@@ -55,7 +56,6 @@ function onGameEnd(id) {
     }
 
     rounds++;
-
     game.reset();
 
 }
@@ -80,6 +80,7 @@ function startLearn() {
     train = true;
      idSpieler.forEach((s,i) => {
         idSpieler[i].learning = true;
+        do_count = true;
     })
 }
 
@@ -87,6 +88,7 @@ function stopLearn() {
     train = false;
     idSpieler.forEach((s,i) => {
         idSpieler[i].learning = false;
+        do_count = false;
     })
 }
 
@@ -112,8 +114,10 @@ const movePlayer = (id, action) => {
 }
 
 const mainLoop = () => {
-    const board1 = game.getBoard(id1);
-    const board2 = game.getBoard(id2);
+    //const board1 = game.getBoard(id1);
+    //const board2 = game.getBoard(id2);
+    const board1 = game.getBoard_new(id1, 5);
+    const board2 = game.getBoard_new(id2, 5);
     const action1 = idSpieler[id1].forward(board1);
     const action2 = idSpieler[id2].forward(board2);
     //console.log("actions", action1, action2);
