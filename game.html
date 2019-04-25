@@ -16,6 +16,7 @@
 </head>
 
 <body>
+    <!--
     <div>
         player1 rot <br>
         Keys: W A S D
@@ -33,6 +34,7 @@
         keys: up left down right
     </div>
     <br>
+    -->
 
     <div>
         player4 gelb <br>
@@ -45,6 +47,11 @@
 
     <button>LoadNet</button>
     <div id="info"></div>
+
+    <div style= "display:flex;">
+        <label>Player 1<div style = "flex-grow: 1" id="info_p1"></div></label>
+        <label>Player 2<div style = "flex-grow: 1" id="info_p2"></div></label>
+    </div>
 
     <button onclick="loadNet(0)">Load Network Player1</button>
     <button onclick="saveNet(0)">Save Network Player1</button>

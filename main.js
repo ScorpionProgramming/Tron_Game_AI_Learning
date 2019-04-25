@@ -9,6 +9,9 @@ idSpieler[id2] = playerBrain();
 
 let element = document.getElementById("info");
 
+let element_p1 = document.getElementById("info_p1");
+let element_p2 = document.getElementById("info_p2");
+
 var do_count = true;
 
 var train = true;
@@ -47,13 +50,16 @@ function onGameEnd(id) {
             if (i != id)
                 idSpieler[i].backward(LOSS_PUNISH);
         })
-        idSpieler[id].visSelf(element);
+        //idSpieler[id].visSelf(element);
     } else {
         idSpieler.forEach((s,i) => {
 
             idSpieler[i].backward(DRAW_PUNISH);
         })
     }
+
+    idSpieler[0].visSelf(element_p1);
+    idSpieler[1].visSelf(element_p2);
 
     rounds++;
     game.reset();

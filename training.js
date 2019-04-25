@@ -21,14 +21,15 @@ const playerBrain = () => {
 	layer_defs.push({ type: 'input', out_sx: 1, out_sy: 1, out_depth: num_inputs });
 	//layer_defs.push({ type: 'conv', sx: 1, filters: 25, stride: 1, pad: 0, activation: 'relu' });
     //layer_defs.push({ type: 'conv', sx: 1, filters: 25, stride: 1, pad: 0, activation: 'relu' });
-	layer_defs.push({ type: 'fc', num_neurons: 25,  activation: 'relu' });//raus
+	layer_defs.push({ type: 'fc', num_neurons: 15,  activation: 'relu' });//raus
+	layer_defs.push({ type: 'fc', num_neurons: 15,  activation: 'relu' });//raus
     //layer_defs.push({ type: 'fc', num_neurons: 120,  activation: 'relu' });//raus
     //layer_defs.push({ type: 'fc', num_neurons: 120,  activation: 'relu' });
 	layer_defs.push({ type: 'regression', num_neurons: num_actions });
 
 	// options for the Temporal Difference learner that trains the above net
 	// by backpropping the temporal difference learning rule.
-	var tdtrainer_options = { learning_rate: 0.01, momentum: 0.6, batch_size: 25, l1_decay: 0.01, l2_decay: 0.001 };
+	var tdtrainer_options = { learning_rate: 0.1, momentum: 0.6, batch_size: 25, l1_decay: 0.01, l2_decay: 0.001 };
 
 	var opt = {};
 	opt.temporal_window = 8;
