@@ -36,7 +36,7 @@ class TRONGame {
     }
 
     addPlayer(color) {
-        const positions = [{ x: 2, y: 2, dir: "east" }, { x: 13, y: 13, dir: "west" }, {x: 2, y: 13, dir: "north"}, {x: 13, y: 2, dir: "south"}];
+        const positions = [{ x: 2, y: 2, dir: "east" }, { x: 13, y: 13, dir: "west" }];//, {x: 2, y: 13, dir: "north"}, {x: 13, y: 2, dir: "south"}];
         let position = {};
         const { field } = this;
         let pos;
@@ -59,17 +59,31 @@ class TRONGame {
         return id;
     }
 
+
     buildField() {
         this.field = [];
+
+        let percent = ((Math.random()*20)+5) / 100;
+
+        console.log(percent);
 
         const { tileSize, canvasSize } = this;
         for (let i = 0; i < canvasSize / tileSize; i++) {
             this.field[i] = [];
             for (let j = 0; j < canvasSize / tileSize; j++) {
-                this.field[i][j] = { placed: 0, color: "lightgrey", val: 0 };
+                let rdm = Math.random();
+                if(rdm < percent){
+                    this.field[i][j] = { placed: 1, color: "black", val: 0 };
+                }else{  
+                    this.field[i][j] = { placed: 0, color: "lightgrey", val: 0 };
+                }
             }
         }
+
+        this.field[2][2] = { placed: 0, color: "lightgrey", val: 0 };
+        this.field[13][13] = { placed: 0, color: "lightgrey", val: 0 };
     }
+
 
     buildField_pad(size) {
         //get the playing field as a 1D-Array

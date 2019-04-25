@@ -27,7 +27,7 @@ function onGameEnd(id) {
 
     if (id != -1) {
 
-        if(rounds - 1500 > 0 && rounds % 100 === 0){
+        if(rounds - 1000 > 0 && rounds % 100 === 0){
             let reward = Math.abs(p1_win - p2_win);
             console.clear();
             if(p1_win > p2_win){
@@ -99,16 +99,16 @@ const movePlayer = (id, action) => {
     switch (action) {
         case 0: 
             game.getPlayer(id).moveUp(); break;
-            idSpieler[id].forward(ALIVE_REWARD);
+            //idSpieler[id].forward(ALIVE_REWARD);
         case 1: 
             game.getPlayer(id).moveLeft(); break;
-            idSpieler[id].forward(ALIVE_REWARD);
+            //idSpieler[id].forward(ALIVE_REWARD);
         case 2: 
             game.getPlayer(id).moveDown(); break;
-            idSpieler[id].forward(ALIVE_REWARD);
+            //idSpieler[id].forward(ALIVE_REWARD);
         case 3:
             game.getPlayer(id).moveRight(); break;
-            idSpieler[id].forward(ALIVE_REWARD);
+            //idSpieler[id].forward(ALIVE_REWARD);
         default: break;
     }
 }
@@ -118,11 +118,13 @@ const mainLoop = () => {
     const board2 = game.getBoard_new(id2, 5);
     const action1 = idSpieler[id1].forward(board1);
     const action2 = idSpieler[id2].forward(board2);
+        
     //console.log("actions", action1, action2);
-
+    
     movePlayer(id1, action1);
     movePlayer(id2, action2);
     game.nextUpdate();
+
     requestAnimationFrame(mainLoop);
 }
 
