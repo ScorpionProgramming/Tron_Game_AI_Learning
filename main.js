@@ -19,7 +19,10 @@ var train = true;
 var p1_win = 0;
 var p2_win = 0;
 
-let rounds = 0; 
+let rounds = 0;
+
+var toggle_blocks = true;
+
 
 function onGameEnd(id) {
     if(id === 0){
@@ -30,7 +33,7 @@ function onGameEnd(id) {
 
     if (id != -1) {
 
-        if(rounds - 1000 > 0 && rounds % 100 === 0){
+        if(rounds - 2000 > 0 && rounds % 100 === 0){
             let reward = Math.abs(p1_win - p2_win);
             console.clear();
             if(p1_win > p2_win){
@@ -148,7 +151,10 @@ function doKeyDown(e) {
     //Keycodes: 87 65 83 68
 
     switch (key) {
-
+        case 32:
+            game.toggle_blocks();
+            console.log(toggle_blocks);
+            break;
         case 87:
             console.log("W pressed");
             game.getPlayer(id1).moveUp();

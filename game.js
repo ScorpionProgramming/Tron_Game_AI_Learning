@@ -26,6 +26,7 @@ class TRONGame {
         this.onGameEnd  = onGameEnd;
         const { canvasSize } = this;
 
+        this.blocks = true;
 
         // Create the canvas
         let canvas = document.createElement("canvas");
@@ -36,7 +37,7 @@ class TRONGame {
     }
 
     addPlayer(color) {
-        const positions = [{ x: 2, y: 2, dir: "east" }, { x: 13, y: 13, dir: "west" }];//, {x: 2, y: 13, dir: "north"}, {x: 13, y: 2, dir: "south"}];
+        const positions = [{ x: 2, y: 2, dir: "east" }, { x: 13, y: 13, dir: "west" }, {x: 2, y: 13, dir: "north"}, {x: 13, y: 2, dir: "south"}];
         let position = {};
         const { field } = this;
         let pos;
@@ -64,15 +65,15 @@ class TRONGame {
         this.field = [];
 
         let percent = ((Math.random()*20)+5) / 100;
-
-        console.log(percent);
+        //console.log(percent);
 
         const { tileSize, canvasSize } = this;
         for (let i = 0; i < canvasSize / tileSize; i++) {
             this.field[i] = [];
             for (let j = 0; j < canvasSize / tileSize; j++) {
+                
                 let rdm = Math.random();
-                if(rdm < percent){
+                if(rdm < percent && this.blocks === true){
                     this.field[i][j] = { placed: 1, color: "black", val: 0 };
                 }else{  
                     this.field[i][j] = { placed: 0, color: "lightgrey", val: 0 };
@@ -80,8 +81,12 @@ class TRONGame {
             }
         }
 
-        this.field[2][2] = { placed: 0, color: "lightgrey", val: 0 };
-        this.field[13][13] = { placed: 0, color: "lightgrey", val: 0 };
+        if(this.blocks === true){
+            this.field[2][2] = { placed: 0, color: "lightgrey", val: 0 };
+            this.field[13][13] = { placed: 0, color: "lightgrey", val: 0 };
+            this.field[2][13] = { placed: 0, color: "lightgrey", val: 0 };
+            this.field[13][2] = { placed: 0, color: "lightgrey", val: 0 };
+        }
     }
 
 
@@ -299,6 +304,14 @@ class TRONGame {
         }
         //console.log(exportField);
         return exportField;
+    }
+
+    toggle_blocks(){
+        if(this.blocks === true){
+            this.blocks = false;
+        }else{
+            this.blocks = true;
+        }
     }
 }
 
