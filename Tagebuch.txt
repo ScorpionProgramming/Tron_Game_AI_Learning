@@ -1,0 +1,13 @@
+- ein funktionierendes TRON Spiel entworfen
+    - steuerung von außen ermöglicht
+    - funktion zur Endermittlung erstellt
+
+
+- Entwicklung in verdschiedene Branches um verschiedene Sachen auszuprobieren
+
+    - Dem Netz nur die umliegenden 5x5 Felder Zeigen
+    - Das Feld zufällig mit belegten Feldern füllen um reaktionen zu erzwingen
+
+    - getestet dem Netz ein Feld mit One-Hot-Encoding für jedes Feld zu übergeben "[["feld Leer", "eigenes Feld", "gegner Feld"],[,,]]
+    - versucht jeden Schritt der KI zu bewerten
+    - 
