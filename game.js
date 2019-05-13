@@ -123,12 +123,12 @@ class TRONGame {
         //this.checkWinCondition();
     }
 
-    nextUpdate() {
+    nextUpdate(draw) {
         if (this.noConstantUpdates) {
             this.updateEachPlayer();
-
         }
-        this.render();
+        if (draw)
+            this.render();
         return this.checkWinCondition();
     }
 
@@ -157,7 +157,7 @@ class TRONGame {
             default:
                 // es geht weiter
                 // TODO problem bei mehr als zwei spielern
-                this.ratePlayers(99);
+                //this.ratePlayers(99);
                 return true;
         }
     }
@@ -242,11 +242,11 @@ class TRONGame {
                 const place = this.field[n][i];
 
                 if (place.playerId == -1) {
-                    exportField.push(...[1, 0, 0]);
+                    exportField.push(0);
                 } else if (place.playerId == id) {
                     let isHead = 0;
                     this.players.forEach(p => (p.id == id && p.posX == n && p.posY == i) ? isHead = 1 : {});
-                    exportField.push(...[0, 1 + isHead, 0]);
+                    exportField.push(1);
                 } else {
                     let isHead = 0;
                     this.players.some(p => {
@@ -254,7 +254,7 @@ class TRONGame {
                             isHead = 0.5; return true;
                         }
                     });
-                    exportField.push(...[0, 0, 1 + isHead]);
+                    exportField.push(1);
                 }
                 //exportField[tileCount * i + n] = place.placed;
             }
@@ -329,34 +329,35 @@ class Player {
     }
 
     logMove(direction) {
-        console.log(this.id, this.color, direction);
+        //console.log(this.id, this.color, direction);
     }
 
     moveUp() {
         //if (this.dir !== "south")
         this.nextDir = "north";
         this.logMove(this.nextDir);
-
+        return this.isPositionEmpty() === null ? false : true;
     }
 
     moveLeft() {
         //if (this.dir !== "east")
         this.nextDir = "west";
         this.logMove(this.nextDir);
-
+        return this.isPositionEmpty() === null ? false : true;
     }
 
     moveDown() {
         //if (this.dir !== "north")
         this.nextDir = "south";
         this.logMove(this.nextDir);
-
+        return this.isPositionEmpty() === null ? false : true;
     }
 
     moveRight() {
         //if (this.dir !== "west")
         this.nextDir = "east";
         this.logMove(this.nextDir);
+        return this.isPositionEmpty() === null ? false : true;
     }
 
     checkDirection() {
@@ -383,12 +384,7 @@ class Player {
         }
     }
 
-    //returns true if collision occured
-    update() {
-        if (!this.alive) {
-            return;
-        }
-
+    X_Y_Direction() {
         this.checkDirection();
 
         let nX = 0, nY = 0;
@@ -404,23 +400,35 @@ class Player {
         if (this.dir === "north") {
             nY = -1;
         }
+        return { nX, nY };
+    }
 
-        //gridmovement
+    isPositionEmpty() {
+        const { nX, nY } = this.X_Y_Direction();
+
         let nextPosX = this.posX + nX;
         let nextPosY = this.posY + nY;
 
         if (this.field[nextPosX] != undefined && this.field[nextPosX][nextPosY] != undefined &&
             this.field[nextPosX][nextPosY].placed !== 1) {
+            return { X: nextPosX, Y: nextPosY };
+        }
+        return null;
+    }
 
-            //console.log("moving");
+    //returns true if collision occured
+    update() {
+        if (!this.alive) {
+            return;
+        }
 
-            /* this.field[nextPosX][nextPosY].placed = 1;
-            this.field[nextPosX][nextPosY].color = this.color;
-            this.field[nextPosX][nextPosY].playerId = this.id; */
 
-            this.posX = nextPosX;
-            this.posY = nextPosY;
 
+        const nextPos = this.isPositionEmpty();
+        if (nextPos != null) {
+
+            this.posX = nextPos.X;
+            this.posY = nextPos.Y;
 
             this.setPlayerOnField();
 

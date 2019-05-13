@@ -1,7 +1,8 @@
 
-const game = new TRONGame(true, onRating);
+let game = new TRONGame(true, onRating);
 let stopped = false;
 let learning = true;
+let drawing = true;
 const id1 = game.addPlayer("green");
 const id2 = game.addPlayer("red");
 let idSpieler = [];
@@ -19,7 +20,6 @@ function onRating(state, id) {
     switch (state) {
         //unentschieden id = undefined
         case 0:
-            console.log("DRAW");
             idSpieler.forEach((s, i) => {
 
                 idSpieler[i].backward(DRAW_PUNISH);
@@ -74,30 +74,48 @@ game.start();
 
 const movePlayer = (id, action) => {
     switch (action) {
-        case 0: game.getPlayer(id).moveUp(); break;
-        case 1: game.getPlayer(id).moveLeft(); break;
-        case 2: game.getPlayer(id).moveDown(); break;
-        case 3: game.getPlayer(id).moveRight(); break;
-        default: console.warn("WRONG INPUT", id); break;
+        case 0: return game.getPlayer(id).moveUp(); break;
+        case 1: return game.getPlayer(id).moveLeft(); break;
+        case 2: return game.getPlayer(id).moveDown(); break;
+        case 3: return game.getPlayer(id).moveRight(); break;
+        default: throw "WRONG INPUT " + id; break;
     }
 }
 
 const mainLoop = () => {
     const p1 = idSpieler[id1];
     const p2 = idSpieler[id2];
-    const action1 = p1.forward(game.getBoard(id1));
-    const action2 = p2.forward(game.getBoard(id2));
-    //console.log("actions", action1, action2);
+    let validMove = false;
+    const start = Date.now();
+    let versuche = 0;
+    while (!validMove) {
+        versuche++;
+        const action1 = p1.forward(game.getBoard(id1));
+        const action2 = p2.forward(game.getBoard(id2));
+        //console.log("actions", action1, action2);
 
-    movePlayer(id1, action1);
-    movePlayer(id2, action2);
-    game.nextUpdate();
+        const p1Valid = movePlayer(id1, action1);
+        if(!p1Valid) p1.backward(-1);
 
+        const p2Valid = movePlayer(id2, action2);
+        if(!p2Valid) p2.backward(-1);
+
+        validMove = p1Valid && p2Valid;
+        const now = Date.now();
+        if((now - start > 100) && validMove == false){
+            validMove = true;
+        }
+        else if(validMove) {
+            console.log("good");
+        }
+    }
+
+    stillGoing = game.nextUpdate(drawing);
 
 
     if (!stopped)
         //requestAnimationFrame(mainLoop);
-        setTimeout(mainLoop, learning ? 1 : 500);
+        setTimeout(mainLoop, learning ? 1 : 250);
 }
 
 const toggleLoop = () => {
@@ -108,6 +126,10 @@ const toggleLoop = () => {
 const toggleLearning = () => {
     learning = !learning;
     idSpieler.forEach(s => s.learning = learning);
+}
+
+const toggleDrawing = () => {
+    drawing = !drawing;
 }
 
 mainLoop();

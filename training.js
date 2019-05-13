@@ -1,13 +1,13 @@
-const WIN_REWARD = 50;
-const ALIVE_REWARD = 5;
-const LOSS_PUNISH = -50;
-const DRAW_PUNISH = -25;
+const WIN_REWARD = 1;
+const ALIVE_REWARD = 1;
+const LOSS_PUNISH = -2;
+const DRAW_PUNISH = -2;
 
 // Todo for the neural network
 // example from : https://cs.stanford.edu/people/karpathy/convnetjs/demo/rldemo.html
 
 const playerBrain = () => {
-    var num_inputs = (16 * 16 * 3); // 9 eyes, each sees 3 numbers (wall, green, red thing proximity)
+    var num_inputs = (16 * 16); // 9 eyes, each sees 3 numbers (wall, green, red thing proximity)
     var num_actions = 4; // 5 possible angles agent can turn
     var temporal_window = 0; // amount of temporal memory. 0 = agent lives in-the-moment :)
     var network_size = num_inputs * temporal_window + num_actions * temporal_window + num_inputs;
@@ -36,8 +36,8 @@ const playerBrain = () => {
     opt.gamma = 0.7;
     opt.learning_steps_total = 200000;
     opt.learning_steps_burnin = 3000;
-    opt.epsilon_min = 0.05;
-    opt.epsilon_test_time = 0.05;
+    opt.epsilon_min = 0.001;
+    opt.epsilon_test_time = 0.001;
     opt.layer_defs = layer_defs;
     opt.tdtrainer_options = tdtrainer_options;
 
